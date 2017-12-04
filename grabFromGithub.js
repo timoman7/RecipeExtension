@@ -27,9 +27,9 @@ fetch(filePath + "filepaths.json").then((result) => {
       if (arg[0].endsWith("/")) {
         if (!files[arg[0]]) {
           files[arg[0]] = {};
-        } else {
-          files[arg[0]][arg[1]] = arg[1].endsWith("json") ? Obj.json() : Obj.text();
         }
+        files[arg[0]][arg[1]] = arg[1].endsWith("json") ? Obj.json() : Obj.text();
+
       } else {
         files[arg[0]] = arg[0].endsWith("json") ? Obj.json() : Obj.text();
       }
