@@ -2,6 +2,8 @@
   "js/": {
     "main.js": "main.js"
   },
+  "filepaths.json": "filepaths.json",
+  "grabFromGithub.js": "grabFromGithub.js",
   "manifest.json": "manifest.json",
   "sampleRecipeAllrecipes.html": "sampleRecipeAllrecipes.html",
   "sampleRecipeBreathe.html": "sampleRecipeBreathe.html"

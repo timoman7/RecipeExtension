@@ -22,15 +22,17 @@ fetch(filePath + "filepaths.json").then((result) => {
   recursiveJSON(json, function() {
     var arg = arguments;
     fetch(filePath + (([...arguments].join("")).replace(/ /g, ""))).then((result) => {
+      return result;
+    }).then((Obj) => {
       if (arg[0].endsWith("/")) {
         if (!files[arg[0]]) {
           files[arg[0]] = {};
         } else {
-          files[arg[0]][arg[1]] = result;
+          files[arg[0]][arg[1]] = arg[1].endsWith("json") ? Obj.json() : Obj.text();
         }
       } else {
-        files[arg[0]] = result;
+        files[arg[0]] = arg[0].endsWith("json") ? Obj.json() : Obj.text();
       }
     });
-  })
+  });
 });
