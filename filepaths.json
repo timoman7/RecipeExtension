@@ -1,0 +1,7 @@
+{
+  "js/": {
+    "main.js": "main.js"
+  },
+  "manifest.json": "manifest.json",
+  "sampleRecipeAllrecipes.html": "sampleRecipeAllRecipes.html"
+}
