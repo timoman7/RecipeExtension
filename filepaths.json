@@ -3,5 +3,6 @@
     "main.js": "main.js"
   },
   "manifest.json": "manifest.json",
-  "sampleRecipeAllrecipes.html": "sampleRecipeAllrecipes.html"
+  "sampleRecipeAllrecipes.html": "sampleRecipeAllrecipes.html",
+  "sampleRecipeBreathe.html": "sampleRecipeBreathe.html"
 }
