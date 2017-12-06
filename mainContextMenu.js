@@ -1,6 +1,7 @@
 let altNames = {
   "nutrition": "NutritionInformation",
-  "ingredients": "recipeIngredient"
+  "ingredients": "recipeIngredient",
+  "instructions": "recipeInstructions"
 };
 let schemaOpts = {
   "Recipe":{
@@ -142,7 +143,7 @@ function getRecipe(origin){
   }else if(["Breathe","Dream","Allrecipes"].includes(origin)){
     _recipe = parseSchema(origin, "Recipe");
   }
-
+  _recipe.URL = window.location.origin+window.location.pathname;
   return _recipe;
 }
 

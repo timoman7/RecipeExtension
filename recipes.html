@@ -5,28 +5,49 @@
   <meta charset="utf-8">
   <title>Recipes</title>
   <script src="./js/recipes.js" charset="utf-8"></script>
-</head>
+  <style media="screen">
+    .recipe-holder{
+      border: 8px solid #333;
+      padding: 4px;
+    }
+    ol{
 
+    }
+    li{
+      
+    }
+  </style>
+</head>
 <body>
   <template id="RecipeTemplate">
-    <div itemscope itemtype="http://schema.org/Recipe">
-      <span class="name" itemprop="name"></span>
-      By <span class="author" itemprop="author"></span>
-      <span class="description" itemprop="description"></span>
-      Prep Time: <span class="prepTime" itemprop="prepTime"></span>
-      Cook time: <span class="cookTime" itemprop="cookTime"></span>
-      Yield: <span class="recipeYield" itemprop="recipeYield"></span>
-      <div class="nutrition" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">
-        Nutrition facts:
-      </div>
+    <div class="recipe-holder" itemscope itemtype="http://schema.org/Recipe">
+      <button class="removeRecipe">Remove recipe</button>
+      <h1><span class="name" itemprop="name"></span></h1><br>
+      <span class="image" itemprop="image" hidden></span>
+      By <span class="author" itemprop="author"></span><br>
+      Cooking Method: <span class="cookingMethod" itemprop="cookingMethod"></span><br>
+      Recipe category: <span class="recipeCategory" itemprop="recipeCategory"></span><br>
+      Recipe cuisine: <span class="recipeCuisine" itemprop="recipeCuisine"></span><br>
+      <span class="description" itemprop="description"></span><br>
+      Prep Time: <span class="prepTime" itemprop="prepTime"></span><br>
+      Cook time: <span class="cookTime" itemprop="cookTime"></span><br>
+      Yield: <span class="recipeYield" itemprop="recipeYield"></span><br>
+      <br>
+      Nutrition facts: <ol class="nutrition" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">
+      </ol>
       Ingredients:
-      <div class="ingredients">
-      </div>
+      <ol class="ingredients">
+      </ol>
 
       Instructions:
-      <div class="instructions">
-      </div>
+      <ol class="instructions">
+      </ol>
+      <br>
+      Url: <a class="URL"></a>
     </div>
   </template>
+  <div id="EveryRecipe">
+
+  </div>
 </body>
 </html>

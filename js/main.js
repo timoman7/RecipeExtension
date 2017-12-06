@@ -10,6 +10,9 @@ let schemaOpts = {
     "recipeYield": "Single",
     "recipeCategory": "Single",
     "cookingMethod": "Single",
+    "prepTime": "Single",
+    "cookTime": "Single",
+    "totalTime": "Single",
     "ingredients": "Multiple",
     "recipeCuisine": "Single",
     "recipeIngredient": "Multiple",
@@ -37,8 +40,7 @@ function parseProp(prop, propType, schemaType, origin){
     }else if(propType == "Multiple"){
       _prop = [];
       for(let i = 0; i < prop.length; i++){
-        prop[i] = prop[i].textContent
-        _prop.push(prop[i]);
+        _prop.push(prop[i].textContent);
       }
     }else if(propType == "New Type"){
       console.log(prop, propType);
@@ -155,7 +157,7 @@ function getRecipe(origin){
   }else if(["Breathe","Dream","Allrecipes"].includes(origin)){
     _recipe = parseSchema(origin, "Recipe");
   }
-
+  _recipe.URL = window.location.origin+window.location.pathname;
   return _recipe;
 }
 
