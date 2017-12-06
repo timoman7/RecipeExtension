@@ -17,12 +17,13 @@
     "default_popup": "popup/popup.html"
   },
   "background": {
-    "scripts": ["mainContextMenu.js"],
-    "page": "recipes.html"
+    "scripts": ["mainContextMenu.js"]
   },
   "permissions": [
     "tabs",
     "contextMenus",
+    "storage",
+    "unlimitedStorage",
     "*://*.alldayidreamaboutfood.com/*",
     "*://*.ibreatheimhungry.com/*",
     "*://*.allrecipes.com/*",

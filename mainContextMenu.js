@@ -160,7 +160,7 @@ function getRecipe(origin){
 }
 
 function getOrigin(e){
-  let origin = e.currentTarget.location.host || window.location.host;
+  let origin = e.pageUrl || e.currentTarget.location.host || window.location.host;
   let _origin = false;
   if(origin.includes("ibreatheimhungry.com")){
     _origin = "Breathe";
@@ -180,5 +180,22 @@ function loadRecipePage(e){
 
   console.log(_recipe)
 }
+
+function addRecipe(info, tab){
+  console.log(window, document)
+  chrome.tabs.sendMessage(tab.id, , function(e){console.log(e)});
+  console.log(info, tab);
+  console.log(getRecipe(getOrigin(info)))
+}
+// NOTE: USE CHROME.TABS.SENDMESSAGE ONMESSAGE AND CHROME.RUNTIME.SENDMESSAGE ONMESSAGE
 console.log(chrome.contextMenus)
-chrome.contextMenus.create({});
+chrome.contextMenus.create({
+  "type": "normal",
+  "title": "Add recipe",
+  "contexts": ["page"],
+  "onclick": addRecipe,
+  "documentUrlPatterns": ["*://*.alldayidreamaboutfood.com/*",
+  "*://*.ibreatheimhungry.com/*",
+  "*://*.allrecipes.com/*",
+  "*://*.lowcarbyum.com/*"]
+});

@@ -180,5 +180,3 @@ function loadRecipePage(e){
 
   console.log(_recipe)
 }
-console.log(chrome.contextMenus)
-window.addEventListener('load',loadRecipePage);
