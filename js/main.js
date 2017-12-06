@@ -1,3 +1,7 @@
+String.prototype.replaceWild=function(start,end,replaceWith){
+	var newString = this.replace(new RegExp("("+start+")([\#\(\)\{\}\"\'\=\+\-\_\<\>\[\]\/\\ a-zA-Z0-9])*("+end+")","g"), replaceWith)
+	return newString;
+}
 let altNames = {
   "nutrition": "NutritionInformation",
   "ingredients": "recipeIngredient"
