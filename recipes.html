@@ -1,10 +1,32 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Recipes</title>
-  </head>
-  <body>
-    
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <title>Recipes</title>
+  <script src="./js/recipes.js" charset="utf-8"></script>
+</head>
+
+<body>
+  <template id="RecipeTemplate">
+    <div itemscope itemtype="http://schema.org/Recipe">
+      <span class="name" itemprop="name"></span>
+      By <span class="author" itemprop="author"></span>
+      <span class="description" itemprop="description"></span>
+      Prep Time: <span class="prepTime" itemprop="prepTime"></span>
+      Cook time: <span class="cookTime" itemprop="cookTime"></span>
+      Yield: <span class="recipeYield" itemprop="recipeYield"></span>
+      <div class="nutrition" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">
+        Nutrition facts:
+      </div>
+      Ingredients:
+      <div class="ingredients">
+      </div>
+
+      Instructions:
+      <div class="instructions">
+      </div>
+    </div>
+  </template>
+</body>
 </html>

@@ -160,7 +160,7 @@ function getRecipe(origin){
 }
 
 function getOrigin(e){
-  let origin = e.currentTarget.location.host;
+  let origin = (e.currentTarget || e).location.host;
   let _origin;
   if(origin.includes("ibreatheimhungry.com")){
     _origin = "Breathe";
@@ -180,3 +180,20 @@ function loadRecipePage(e){
 
   console.log(_recipe)
 }
+
+
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log(sender.tab ?
+              "from a content script:" + sender.tab.url :
+              "from the extension");
+    console.log(request)
+    if (request.response == "RecipeReceived"){
+      sendResponse({response: "End"});
+    }else if(request.response == "GetRecipe"){
+      sendResponse({
+        response: "RecipeSent",
+        data: getRecipe(getOrigin(window))
+      });
+    }
+});

@@ -41,7 +41,6 @@ function parseProp(prop, propType, schemaType, origin){
         _prop.push(prop[i]);
       }
     }else if(propType == "New Type"){
-      console.log(prop, propType);
       _prop = {};
       for(let i in prop){
         _prop[i] = prop[i];
@@ -56,43 +55,35 @@ function parseProp(prop, propType, schemaType, origin){
       }
     }else if(propType == "Multiple"){
       _prop = [];
-      console.log(prop)
       for(let i = 0; i < prop.length; i++){
-        console.log(prop[i])
         if(prop[i].querySelector){
           if(prop[i].classList.contains('recipe-directions__list')){
-            console.log(prop[i])
             let tProp = prop[i].querySelectorAll(".recipe-directions__list--item");
             for(let _i = 0; _i < tProp.length; _i++){
               _prop.push(tProp[_i].textContent);
             }
           }else if(prop[i].classList.contains('recipe-ingred_txt')){
-            console.log(prop[i])
             _prop.push(prop[i].textContent);
           }
         }else if(prop[i].classList){
           prop[i].setAttribute('itemprop', Object.getOwnPropertyNames(altNames).includes(prop[i].getAttribute('itemprop')) ? altNames[prop[i].getAttribute('itemprop')] : prop[i].getAttribute('itemprop'));
           if(prop[i].classList.contains('recipe-ingred_txt')){
             let tProp = prop[i].querySelectorAll(".recipe-ingred_txt");
-            console.log(tProp)
             for(let _i = 0; _i < prop[i].length; _i++){
               _prop.push(prop[i][_i].textContent);
             }
           }
         }else{
-          console.log(prop[i])
           _prop.push(prop[i].textContent);
         }
       }
     }else if(propType == "New Type"){
-      console.log(prop, propType);
       _prop = {};
       for(let i in prop){
         _prop[i] = prop[i];
       }
     }
   }
-  console.log(prop, propType)
   return _prop;
 }
 
@@ -102,12 +93,10 @@ function parseSchema(origin, schemaType){
   if(origin){
     recipeContainer = document.querySelector("[itemtype=https\\:\\/\\/schema\\.org\\/"+schemaType+"]") || document.querySelector("[itemtype=http\\:\\/\\/schema\\.org\\/"+schemaType+"]");
   }
-  console.log(origin, schemaType, recipeContainer)
   if(origin != "Allrecipes"){
     for(let schemaProp in schemaOpts[schemaType]){
       let prop;
       let propType = schemaOpts[schemaType][schemaProp];
-      console.log(schemaProp)
       if(schemaOpts[schemaType][schemaProp] == "Single"){
         prop = recipeContainer.querySelector('[itemprop='+schemaProp+']');
       }else if(schemaOpts[schemaType][schemaProp] == "Multiple"){
@@ -125,7 +114,6 @@ function parseSchema(origin, schemaType){
     for(let schemaProp in schemaOpts[schemaType]){
       let prop;
       let propType = schemaOpts[schemaType][schemaProp];
-      console.log(schemaProp)
       if(schemaOpts[schemaType][schemaProp] == "Single"){
         prop = recipeContainer.querySelector('[itemprop='+schemaProp+']');
       }else if(schemaOpts[schemaType][schemaProp] == "Multiple"){
@@ -136,7 +124,6 @@ function parseSchema(origin, schemaType){
       let trueName = Object.getOwnPropertyNames(altNames).includes(schemaProp) ? altNames[schemaProp] : schemaProp;
       if(prop){
         if(prop.setAttribute){
-          console.log(prop)
           prop.setAttribute('itemprop', trueName);
         }
       }
@@ -171,24 +158,45 @@ function getOrigin(e){
   }else if(origin.includes("lowcarbyum.com")){
     _origin = "LowCarbYum";
   }
-  console.log(_origin)
   return _origin;
 }
 
-function loadRecipePage(e){
-  let _recipe = getRecipe(getOrigin(e));
-
-  console.log(_recipe)
+function saveRecipe(recipe){
+  console.log(recipe)
+  chrome.storage.sync.get(function(strg){
+    if(!strg.recipes){
+      chrome.storage.sync.set({
+        recipes: []
+      });
+    }
+  });
+  chrome.storage.sync.get("recipes",function(strg){
+    strg.recipes.push(recipe);
+    chrome.storage.sync.set({
+      recipes: strg.recipes
+    });
+  });
 }
 
 function addRecipe(info, tab){
-  console.log(window, document)
-  chrome.tabs.sendMessage(tab.id, , function(e){console.log(e)});
-  console.log(info, tab);
-  console.log(getRecipe(getOrigin(info)))
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {response: "GetRecipe"}, function(response) {
+      if(response){
+        if(response.data){
+          saveRecipe(response.data);
+        }
+      }
+    });
+  });
 }
 // NOTE: USE CHROME.TABS.SENDMESSAGE ONMESSAGE AND CHROME.RUNTIME.SENDMESSAGE ONMESSAGE
-console.log(chrome.contextMenus)
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log(request)
+    if (request.response == "RecipeSent"){
+      sendResponse({response: "RecipeReceived"});
+    }
+});
 chrome.contextMenus.create({
   "type": "normal",
   "title": "Add recipe",
