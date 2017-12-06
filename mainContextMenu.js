@@ -160,8 +160,8 @@ function getRecipe(origin){
 }
 
 function getOrigin(e){
-  let origin = e.currentTarget.location.host;
-  let _origin;
+  let origin = e.currentTarget.location.host || window.location.host;
+  let _origin = false;
   if(origin.includes("ibreatheimhungry.com")){
     _origin = "Breathe";
   }else if(origin.includes("allrecipes.com")){
@@ -181,4 +181,4 @@ function loadRecipePage(e){
   console.log(_recipe)
 }
 console.log(chrome.contextMenus)
-window.addEventListener('load',loadRecipePage);
+chrome.contextMenus.create({});

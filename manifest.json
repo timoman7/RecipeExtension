@@ -16,6 +16,10 @@
     "default_title": "Tim's Recipe Tracker",
     "default_popup": "popup/popup.html"
   },
+  "background": {
+    "scripts": ["mainContextMenu.js"],
+    "page": "recipes.html"
+  },
   "permissions": [
     "tabs",
     "contextMenus",
