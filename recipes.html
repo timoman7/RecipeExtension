@@ -4,6 +4,10 @@
 <head>
   <meta charset="utf-8">
   <title>Recipes</title>
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <script src="./js/jquery.min.js" charset="utf-8"></script>
+  <script src="./js/popper.min.js" charset="utf-8"></script>
+  <script src="./js/bootstrap.min.js"></script>
   <script src="./js/recipes.js" charset="utf-8"></script>
   <style media="screen">
     .recipe-holder{
@@ -14,40 +18,52 @@
 
     }
     li{
-      
+
     }
   </style>
 </head>
 <body>
   <template id="RecipeTemplate">
-    <div class="recipe-holder" itemscope itemtype="http://schema.org/Recipe">
-      <button class="removeRecipe">Remove recipe</button>
-      <h1><span class="name" itemprop="name"></span></h1><br>
-      <span class="image" itemprop="image" hidden></span>
-      By <span class="author" itemprop="author"></span><br>
-      Cooking Method: <span class="cookingMethod" itemprop="cookingMethod"></span><br>
-      Recipe category: <span class="recipeCategory" itemprop="recipeCategory"></span><br>
-      Recipe cuisine: <span class="recipeCuisine" itemprop="recipeCuisine"></span><br>
-      <span class="description" itemprop="description"></span><br>
-      Prep Time: <span class="prepTime" itemprop="prepTime"></span><br>
-      Cook time: <span class="cookTime" itemprop="cookTime"></span><br>
-      Yield: <span class="recipeYield" itemprop="recipeYield"></span><br>
-      <br>
-      Nutrition facts: <ol class="nutrition" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">
-      </ol>
-      Ingredients:
-      <ol class="ingredients">
-      </ol>
+    <tr>
+      <td class="recipe-holder" itemscope itemtype="http://schema.org/Recipe">
+        <button class="removeRecipe">Remove recipe</button>
+        <h1><span class="name" itemprop="name"></span></h1><br>
+        <span class="image" itemprop="image" hidden></span>
+        By <span class="author" itemprop="author"></span><br>
+        Cooking Method: <span class="cookingMethod" itemprop="cookingMethod"></span><br>
+        Recipe category: <span class="recipeCategory" itemprop="recipeCategory"></span><br>
+        Recipe cuisine: <span class="recipeCuisine" itemprop="recipeCuisine"></span><br>
+        <span class="description" itemprop="description"></span><br>
+        Prep Time: <span class="prepTime" itemprop="prepTime"></span><br>
+        Cook time: <span class="cookTime" itemprop="cookTime"></span><br>
+        Yield: <span class="recipeYield" itemprop="recipeYield"></span><br>
+        <br>
+        Nutrition facts: <ol class="nutrition" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">
+        </ol>
+        Ingredients:
+        <ol class="ingredients">
+        </ol>
 
-      Instructions:
-      <ol class="instructions">
-      </ol>
-      <br>
-      Url: <a class="URL"></a>
-    </div>
+        Instructions:
+        <ol class="instructions">
+        </ol>
+        <br>
+        Url: <a class="URL"></a>
+      </td>
+    </tr>
   </template>
-  <div id="EveryRecipe">
-
+  <div id="sorting">
+    <select id="SortFilter">
+      <option value="sort" selected>Sort</option>
+      <option value="filter">Filter</option>
+    </select> by: <select id="SortFilterOpt">
+      <option value="name">Name</option>
+      <option value="prep">Prep time</option>
+      <option value="cook">Cook time</option>
+      <option value="none" selected>Nothing</option>
+    </select> - <button id="SortFilterSubmit">Apply</button>
   </div>
+  <table id="EveryRecipe">
+  </table>
 </body>
 </html>

@@ -1,13 +1,16 @@
 let recipes;
 let _RecipeTemplate;
 let RecipeHolder;
+let BTSRecipes = [];
+let SFMode;
+let SFOpt;
+let SFSubmit;
 String.prototype.camelToProper = function(){
   let newString = "";
   let upperCase = this.match(/[A-Z]/g) || [];
   newString = this.split(/[A-Z]/g);
   let tempString = "";
   newString.forEach((section) => {
-    console.log(section)
     tempString += (upperCase[newString.indexOf(section)-1]||"").toLowerCase()+section+" ";
   });
   newString = tempString.substr(0,1).toUpperCase() + tempString.substr(1,tempString.length-1);
@@ -25,7 +28,6 @@ function updateRecipes(){
   });
 }
 function removeRecipe(recipeID){
-  console.log(recipeID)
   chrome.storage.sync.get(function(strg){
     if(!strg.recipes){
       chrome.storage.sync.set({
@@ -49,7 +51,6 @@ function recipeToHtml(recipe, recipeInd){
       let fakeName = Object.getOwnPropertyNames(altNames).includes(prop) ? altNames[prop] : prop;
       let trueName = Object.getOwnPropertyNames(altNames).includes(prop) ? prop : altNames[prop];
       if(typeof propVal == "object"){
-        console.log(fakeName)
         let sectTemplate = recipeHTML.querySelector("."+fakeName);
         if(sectTemplate){
           for(let frag in recipe[prop]){
@@ -63,7 +64,6 @@ function recipeToHtml(recipe, recipeInd){
               }else{
                 fragHTML.textContent = fragVal;
               }
-              console.log(fakeName, altNames[trueName])
               if(trueName == "NutritionInformation"){
                 fragHTML.setAttribute('itemprop', frag);
               }else{
@@ -73,7 +73,6 @@ function recipeToHtml(recipe, recipeInd){
                   fragHTML.setAttribute('itemprop', trueName);
                 }
               }
-              console.log(sectTemplate)
               sectTemplate.appendChild(fragHTML);
               sectTemplate.appendChild(document.createElement('br'));
             }
@@ -137,10 +136,41 @@ function updateRecipeHTML(d, p){
   }
 }
 
+function sortRecipes(Mode, whatToSortBy){
+  let valConvert = {
+    "name": "name",
+    "prep": "prepTime",
+    "cook": "cookTime",
+    "none": "none",
+  };
+  let sortType = valConvert[whatToSortBy];
+  if(sortType != "none"){
+    chrome.storage.sync.get("recipes", function(strg){
+      BTSRecipes = strg.recipes;
+    });
+    if(Mode == "Sort"){
+
+    }else if(Mode == "Filter"){
+
+    }
+  }else{
+    chrome.storage.sync.get("recipes", function(strg){
+      BTSRecipes = strg.recipes;
+    });
+    recipes = BTSRecipes;
+  }
+}
+
 chrome.storage.onChanged.addListener(updateRecipeHTML);
 
 window.addEventListener('load',function(){
   updateRecipes();
+  SFMode = document.querySelector('#SortFilter');
+  SFOpt = document.querySelector('#SortFilterOpt');
+  SFSubmit = document.querySelector('#SortFilterSubmit');
+  SFSubmit.addEventListener('click', function(){
+    sortRecipes(SFMode.value, SFOpt.value);
+  });
   RecipeHolder = document.querySelector("#EveryRecipe");
   _RecipeTemplate = document.querySelector('#RecipeTemplate');
   setTimeout(function(){
