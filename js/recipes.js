@@ -2,9 +2,17 @@ let recipes;
 let _RecipeTemplate;
 let RecipeHolder;
 let BTSRecipes = [];
-let SFMode;
-let SFOpt;
+//Sort        | SortOpt SortDir
+let SOpt;
+let SDir;
+//Filter      | FilterOpt FilterIs FilterOp FilterText
+let FOpt;
+let FIs;
+let FOp;
+let FText;
+//SortFilter  | SortFilterSubmit SortFilterClear
 let SFSubmit;
+let SFClear;
 String.prototype.camelToProper = function(){
   let newString = "";
   let upperCase = this.match(/[A-Z]/g) || [];
@@ -24,6 +32,7 @@ let altNames = {
 };
 function updateRecipes(){
   chrome.storage.sync.get("recipes", function(strg){
+    BTSRecipes = strg.recipes;
     recipes = strg.recipes;
   });
 }
@@ -136,40 +145,213 @@ function updateRecipeHTML(d, p){
   }
 }
 
-function sortRecipes(Mode, whatToSortBy){
+function updateRecipeHTMLManual(){
+  let oldRecipes = RecipeHolder.querySelectorAll('.recipe-holder');
+  for(let oldRecipeID = oldRecipes.length-1; oldRecipeID >= 0; oldRecipeID--){
+    oldRecipes[oldRecipeID].parentElement.removeChild(oldRecipes[oldRecipeID]);
+  }
+  let _recipes = recipes;
+  for(let recipeInd in _recipes){
+    let newRecipe = recipeToHtml(_recipes[recipeInd], recipeInd);
+    RecipeHolder.appendChild(newRecipe);
+  }
+}
+
+
+//    Sort        | SortOpt SortDir
+// let SOpt;
+// let SDir;
+//    Filter      | FilterOpt FilterIs FilterOp FilterText
+// let FOpt;
+// let FIs;
+// let FOp;
+// let FText;
+//    SortFilter  | SortFilterSubmit SortFilterClear
+// let SFSubmit;
+// let SFClear;
+
+function sortRecipes(_SOpt,SOptType,_SDir){
   let valConvert = {
     "name": "name",
     "prep": "prepTime",
     "cook": "cookTime",
+    "calories": "calories",
+    "fat": "fatContent",
+    "protein": "proteinContent",
+    "carb": "carbohydrateContent",
     "none": "none",
   };
-  let sortType = valConvert[whatToSortBy];
+  let sortType = valConvert[_SOpt];
+  let isNutrition = ["fat","protein","carb","calories"].includes(_SOpt);
   if(sortType != "none"){
     chrome.storage.sync.get("recipes", function(strg){
       BTSRecipes = strg.recipes;
     });
-    if(Mode == "Sort"){
+    recipes.sort((recipeA, recipeB) => {
+      console.log(recipeA, recipeB);
+      let recipeAVal;
+      let recipeBVal;
+      if(_SDir == "asc"){
+        if(isNutrition){
+          recipeAVal = recipeA.NutritionInformation[sortType];
+          recipeBVal = recipeB.NutritionInformation[sortType];
+        }else{
+          recipeAVal = recipeA[sortType];
+          recipeBVal = recipeB[sortType];
+        }
+        if(SOptType == "number"){
+          recipeAVal = parseFloat(recipeAVal.replace(/[ a-zA-Z]/g,""));
+          recipeBVal = parseFloat(recipeBVal.replace(/[ a-zA-Z]/g,""));
+        }else if(SOptType == "string"){
 
-    }else if(Mode == "Filter"){
+        }
+        console.log(recipeAVal > recipeBVal ? 1 : (recipeAVal == recipeBVal ? 0 : -1));
+        return (recipeAVal > recipeBVal ? 1 : (recipeAVal == recipeBVal ? 0 : -1));
+      }else if(_SDir == "dec"){
+        if(isNutrition){
+          recipeAVal = recipeA.NutritionInformation[sortType];
+          recipeBVal = recipeB.NutritionInformation[sortType];
+        }else{
+          recipeAVal = recipeA[sortType];
+          recipeBVal = recipeB[sortType];
+        }
 
-    }
+        if(SOptType == "number"){
+          recipeAVal = parseFloat(recipeAVal.replace(/[ a-zA-Z]/g,""));
+          recipeBVal = parseFloat(recipeBVal.replace(/[ a-zA-Z]/g,""));
+        }else if(SOptType == "string"){
+
+        }
+        console.log(recipeAVal < recipeBVal ? 1 : (recipeAVal == recipeBVal ? 0 : -1));
+        return (recipeAVal < recipeBVal ? 1 : (recipeAVal == recipeBVal ? 0 : -1));
+      }
+    });
   }else{
     chrome.storage.sync.get("recipes", function(strg){
       BTSRecipes = strg.recipes;
     });
     recipes = BTSRecipes;
   }
+  updateRecipeHTMLManual();
 }
+
+function filterRecipes(_FOpt,FOptType,_FIs,_FOp,_FText){
+  let valConvert = {
+    "name": "name",
+    "prep": "prepTime",
+    "cook": "cookTime",
+    "calories": "calories",
+    "fat": "fatContent",
+    "protein": "proteinContent",
+    "carb": "carbohydrateContent",
+    "none": "none",
+  };
+  let filterType = valConvert[_FOpt];
+  let isNutrition = ["fat","protein","carb","calories"].includes(_FOpt);
+  if(filterType != "none"){
+    chrome.storage.sync.get("recipes", function(strg){
+      BTSRecipes = strg.recipes;
+    });
+    recipes = BTSRecipes;
+    recipes = recipes.filter((recipe) => {
+      let recipeVal;
+      if(isNutrition){
+        recipeVal = recipe.NutritionInformation[filterType];
+      }else{
+        recipeVal = recipe[filterType];
+      }
+      if(FOptType == "number"){
+        recipeVal = parseFloat(recipeVal.replace(/[ a-zA-Z]/g,""));
+      }else if(FOptType == "string"){
+
+      }
+      if(FOptType == "string"){
+        if(_FIs == "is"){
+          if(_FOp == "in"){
+            return recipeVal.includes(_FText);
+          }else{
+            return true;
+          }
+        }else if(_FIs == "not"){
+          if(_FOp == "in"){
+            return !(recipeVal.includes(_FText));
+          }else{
+            return true;
+          }
+        }
+      }else if(FOptType == "number"){
+        if(_FIs == "is"){
+          if(_FOp == ">"){
+            return recipeVal > parseFloat(_FText.replace(/[ a-zA-Z]/g, ""));
+          }else if(_FOp == "<"){
+            return recipeVal < parseFloat(_FText.replace(/[ a-zA-Z]/g, ""));
+          }else if(_FOp == "="){
+            return Math.round(recipeVal) == Math.round(parseFloat(_FText.replace(/[ a-zA-Z]/g, "")));
+          }else{
+            return true;
+          }
+        }else if(_FIs == "not"){
+          if(_FOp == ">"){
+            return !(recipeVal > parseFloat(_FText.replace(/[ a-zA-Z]/g, "")));
+          }else if(_FOp == "<"){
+            return !(recipeVal < parseFloat(_FText.replace(/[ a-zA-Z]/g, "")));
+          }else if(_FOp == "="){
+            return !(Math.round(recipeVal) == Math.round(parseFloat(_FText.replace(/[ a-zA-Z]/g, ""))));
+          }else{
+            return true;
+          }
+        }
+      }else{
+        return true;
+      }
+    });
+  }else{
+    chrome.storage.sync.get("recipes", function(strg){
+      BTSRecipes = strg.recipes;
+    });
+    recipes = BTSRecipes;
+  }
+  updateRecipeHTMLManual();
+}
+
+//    Sort        | SortOpt SortDir
+// let SOpt;
+// let SDir;
+//    Filter      | FilterOpt FilterIs FilterOp FilterText
+// let FOpt;
+// let FIs;
+// let FOp;
+// let FText;
+//    SortFilter  | SortFilterSubmit SortFilterClear
+// let SFSubmit;
+// let SFClear;
 
 chrome.storage.onChanged.addListener(updateRecipeHTML);
 
 window.addEventListener('load',function(){
   updateRecipes();
-  SFMode = document.querySelector('#SortFilter');
-  SFOpt = document.querySelector('#SortFilterOpt');
+  SOpt = document.querySelector('#SortOpt');
+  SDir = document.querySelector('#SortDir');
+  FOpt = document.querySelector('#FilterOpt');
+  FIs = document.querySelector('#FilterIs');
+  FOp = document.querySelector('#FilterOp');
+  FText = document.querySelector('#FilterText');
   SFSubmit = document.querySelector('#SortFilterSubmit');
+  SFClear = document.querySelector('#SortFilterClear');
   SFSubmit.addEventListener('click', function(){
-    sortRecipes(SFMode.value, SFOpt.value);
+    if(FOpt.value != "none"){
+      filterRecipes(FOpt.value,FOpt.selectedOptions[0].getAttribute('dataType'),FIs.value,FOp.value,FText.value);
+    }
+    if(SOpt.value != "none"){
+      sortRecipes(SOpt.value,SOpt.selectedOptions[0].getAttribute('dataType'),SDir.value);
+    }
+  });
+  SFClear.addEventListener('click', function(){
+      chrome.storage.sync.get("recipes", function(strg){
+        BTSRecipes = strg.recipes;
+      });
+      recipes = BTSRecipes;
+      updateRecipeHTMLManual();
   });
   RecipeHolder = document.querySelector("#EveryRecipe");
   _RecipeTemplate = document.querySelector('#RecipeTemplate');

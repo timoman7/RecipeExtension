@@ -14,6 +14,16 @@
       border: 8px solid #333;
       padding: 4px;
     }
+    #Body{
+      top: 55px;
+      position: relative;
+    }
+    #sorting{
+      position: fixed;
+      background-color: white;
+      width: 100%;
+      z-index:1;
+    }
     ol{
 
     }
@@ -24,7 +34,7 @@
 </head>
 <body>
   <template id="RecipeTemplate">
-    <tr>
+    <tr class="recipe-holder">
       <td class="recipe-holder" itemscope itemtype="http://schema.org/Recipe">
         <button class="removeRecipe">Remove recipe</button>
         <h1><span class="name" itemprop="name"></span></h1><br>
@@ -53,17 +63,54 @@
     </tr>
   </template>
   <div id="sorting">
-    <select id="SortFilter">
-      <option value="sort" selected>Sort</option>
-      <option value="filter">Filter</option>
-    </select> by: <select id="SortFilterOpt">
-      <option value="name">Name</option>
-      <option value="prep">Prep time</option>
-      <option value="cook">Cook time</option>
+    Sort by: <select id="SortOpt">
+      <optgroup label="Details">
+        <option value="name" dataType="string">Name</option>
+        <option value="prep" dataType="number">Prep time</option>
+        <option value="cook" dataType="number">Cook time</option>
+      </optgroup>
+      <optgroup label="Nutrition Information">
+        <option value="calories" dataType="number">Calories</option>
+        <option value="carb" dataType="number">Carbohydrate content</option>
+        <option value="fat" dataType="number">Fat content</option>
+        <option value="protein" dataType="number">Protein content</option>
+      </optgroup>
       <option value="none" selected>Nothing</option>
-    </select> - <button id="SortFilterSubmit">Apply</button>
+    </select> from <select id="SortDir">
+      <option value="asc" selected>A-Z / Smallest to Largest</option>
+      <option value="dec">Z-A / Largest to Smallest</option>
+    </select><br>Filter: <select id="FilterOpt">
+      <optgroup label="Words">
+        <option value="name" dataType="string">Name</option>
+      </optgroup>
+      <optgroup label="Numbers">
+        <option value="prep" dataType="number">Prep time</option>
+        <option value="cook" dataType="number">Cook time</option>
+        <optgroup label="Nutrition Information">
+          <option value="calories" dataType="number">Calories</option>
+          <option value="carb" dataType="number">Carbohydrate content</option>
+          <option value="fat" dataType="number">Fat content</option>
+          <option value="protein" dataType="number">Protein content</option>
+        </optgroup>
+      </optgroup>
+      <option value="none" selected>Nothing</option>
+    </select> <select id="FilterIs">
+      <option value="is" selected>is</option>
+      <option value="not">is not</option>
+    </select> <select id="FilterOp">
+      <optgroup label="Words">
+        <option value="in">in the word</option>
+      </optgroup>
+      <optgroup label="Numbers">
+        <option value="<">less than</option>
+        <option value=">">greater than</option>
+        <option value="=">equal to</option>
+      </optgroup>
+    </select> <input id="FilterText" type="textbox" placeholder=""></input> - <button id="SortFilterSubmit">Apply</button> - <button id="SortFilterClear">Clear filter/sort</button>
   </div>
-  <table id="EveryRecipe">
-  </table>
+  <div id="Body">
+    <table id="EveryRecipe">
+    </table>
+  </div>
 </body>
 </html>
