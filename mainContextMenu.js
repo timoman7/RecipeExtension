@@ -1,3 +1,7 @@
+function checkWPRM(){
+	return document.querySelector('.wprm-recipe-container') ? true : false;
+}
+chrome.storage.local.QUOTA_BYTES_PER_ITEM = 8192 * 2;
 let altNames = {
   "nutrition": "NutritionInformation",
   "ingredients": "recipeIngredient",
@@ -138,7 +142,7 @@ function parseSchema(origin, schemaType){
 
 function getRecipe(origin){
   let _recipe;
-  if(origin == "LowCarbYum"){
+  if(origin == "LowCarbYum" || origin == "SomeWordPressSite"){
     _recipe = JSON.parse(document.querySelector(".wprm-recipe-container").children[0].text);
   }else if(["Breathe","Dream","Allrecipes"].includes(origin)){
     _recipe = parseSchema(origin, "Recipe");
@@ -158,24 +162,26 @@ function getOrigin(e){
     _origin = "Dream";
   }else if(origin.includes("lowcarbyum.com")){
     _origin = "LowCarbYum";
-  }
+  }else if(checkWPRM()){
+		_origin = "SomeWordPressSite";
+	}
   return _origin;
 }
 
 function saveRecipe(recipe){
   console.log(recipe)
-  chrome.storage.sync.get(function(strg){
+  chrome.storage.local.get(function(strg){
     if(!strg.recipes){
-      chrome.storage.sync.set({
+      chrome.storage.local.set({
         recipes: []
       });
     }
   });
-  chrome.storage.sync.get("recipes",function(strg){
+  chrome.storage.local.get("recipes",function(strg){
     strg.recipes.push(recipe);
-    chrome.storage.sync.set({
+    chrome.storage.local.set({
       recipes: strg.recipes
-    });
+    },console.log);
   });
 }
 
@@ -201,10 +207,49 @@ chrome.runtime.onMessage.addListener(
 chrome.contextMenus.create({
   "type": "normal",
   "title": "Add recipe",
+	"id":"addRecipe",
   "contexts": ["page"],
   "onclick": addRecipe,
-  "documentUrlPatterns": ["*://*.alldayidreamaboutfood.com/*",
-  "*://*.ibreatheimhungry.com/*",
-  "*://*.allrecipes.com/*",
-  "*://*.lowcarbyum.com/*"]
+  "visible": false
+},function(){
+  console.log(arguments)
+  console.log(checkWPRM())
 });
+chrome.tabs.onActivated.addListener(function(activeInfo){
+	chrome.tabs.get(activeInfo.tabId,function(tab){
+		if(!tab.url.includes("chrome://") && !tab.url.includes("chrome-extension://")){
+		  chrome.tabs.executeScript({
+		    "code":"checkWPRM()"
+		  },function(res){
+				if(res[0] == true ||
+					 (tab.url.includes("ibreatheimhungry.com") ||
+						tab.url.includes("allrecipes.com") ||
+						tab.url.includes("alldayidreamaboutfood.com") ||
+						tab.url.includes("lowcarbyum.com"))){
+					chrome.contextMenus.update("addRecipe", {
+						"visible": true
+					});
+				}else{
+					chrome.contextMenus.update("addRecipe", {
+						"visible": false
+					});
+				}
+		    //Make add recipe visible when true
+		  });
+		}else{
+			chrome.contextMenus.update("addRecipe", {
+				"visible": false
+			});
+		}
+	});
+});
+// chrome.contextMenus.create({
+//   "type": "normal",
+//   "title": "Add recipe",
+//   "contexts": ["page"],
+//   "onclick": addRecipe,
+//   "documentUrlPatterns": ["*://*.alldayidreamaboutfood.com/*",
+//   "*://*.ibreatheimhungry.com/*",
+//   "*://*.allrecipes.com/*",
+//   "*://*.lowcarbyum.com/*"]
+// });

@@ -3,7 +3,7 @@
   "name": "Tim's Recipe Tracker",
   "short_name": "TRT",
   "description": "Track recipes from sites following the Recipe schema",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "minimum_chrome_version": "38",
   "browser_action": {
     "default_icon": {
@@ -27,7 +27,8 @@
     "*://*.alldayidreamaboutfood.com/*",
     "*://*.ibreatheimhungry.com/*",
     "*://*.allrecipes.com/*",
-    "*://*.lowcarbyum.com/*"
+    "*://*.lowcarbyum.com/*",
+    "*://*/*"
   ],
   "icons": {
     "16": "assets/icon16.png",
@@ -41,11 +42,13 @@
       "*://*.alldayidreamaboutfood.com/*",
       "*://*.ibreatheimhungry.com/*",
       "*://*.allrecipes.com/*",
-      "*://*.lowcarbyum.com/*"
+      "*://*.lowcarbyum.com/*",
+      "*://*/*"
     ],
     "js": [
       "js/main.js",
       "js/jquery.min.js",
+      "js/popper.min.js",
       "js/bootstrap.min.js"
     ]
   }]

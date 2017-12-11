@@ -2,6 +2,11 @@ String.prototype.replaceWild=function(start,end,replaceWith){
 	var newString = this.replace(new RegExp("("+start+")([\#\(\)\{\}\"\'\=\+\-\_\<\>\[\]\/\\ a-zA-Z0-9])*("+end+")","g"), replaceWith)
 	return newString;
 }
+
+function checkWPRM(){
+	return document.querySelector('.wprm-recipe-container') ? true : false;
+}
+
 let altNames = {
   "nutrition": "NutritionInformation",
   "ingredients": "recipeIngredient"
@@ -156,7 +161,7 @@ function parseSchema(origin, schemaType){
 
 function getRecipe(origin){
   let _recipe;
-  if(origin == "LowCarbYum"){
+  if(origin == "LowCarbYum" || origin == "SomeWordPressSite"){
     _recipe = JSON.parse(document.querySelector(".wprm-recipe-container").children[0].text);
 		_recipe.NutritionInformation = _recipe.nutrition;
 		_recipe.nutrition = undefined;
@@ -178,7 +183,9 @@ function getOrigin(e){
     _origin = "Dream";
   }else if(origin.includes("lowcarbyum.com")){
     _origin = "LowCarbYum";
-  }
+  }else if(checkWPRM()){
+		_origin = "SomeWordPressSite";
+	}
   console.log(_origin)
   return _origin;
 }

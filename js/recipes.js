@@ -31,22 +31,22 @@ let altNames = {
   "recipeInstructions": "instructions"
 };
 function updateRecipes(){
-  chrome.storage.sync.get("recipes", function(strg){
+  chrome.storage.local.get("recipes", function(strg){
     BTSRecipes = strg.recipes;
     recipes = strg.recipes;
   });
 }
 function removeRecipe(recipeID){
-  chrome.storage.sync.get(function(strg){
+  chrome.storage.local.get(function(strg){
     if(!strg.recipes){
-      chrome.storage.sync.set({
+      chrome.storage.local.set({
         recipes: []
       });
     }
   });
-  chrome.storage.sync.get("recipes",function(strg){
+  chrome.storage.local.get("recipes",function(strg){
     strg.recipes.splice(recipeID, 1);
-    chrome.storage.sync.set({
+    chrome.storage.local.set({
       recipes: strg.recipes
     });
   });
@@ -184,7 +184,7 @@ function sortRecipes(_SOpt,SOptType,_SDir){
   let sortType = valConvert[_SOpt];
   let isNutrition = ["fat","protein","carb","calories"].includes(_SOpt);
   if(sortType != "none"){
-    chrome.storage.sync.get("recipes", function(strg){
+    chrome.storage.local.get("recipes", function(strg){
       BTSRecipes = strg.recipes;
     });
     recipes.sort((recipeA, recipeB) => {
@@ -227,7 +227,7 @@ function sortRecipes(_SOpt,SOptType,_SDir){
       }
     });
   }else{
-    chrome.storage.sync.get("recipes", function(strg){
+    chrome.storage.local.get("recipes", function(strg){
       BTSRecipes = strg.recipes;
     });
     recipes = BTSRecipes;
@@ -249,7 +249,7 @@ function filterRecipes(_FOpt,FOptType,_FIs,_FOp,_FText){
   let filterType = valConvert[_FOpt];
   let isNutrition = ["fat","protein","carb","calories"].includes(_FOpt);
   if(filterType != "none"){
-    chrome.storage.sync.get("recipes", function(strg){
+    chrome.storage.local.get("recipes", function(strg){
       BTSRecipes = strg.recipes;
     });
     recipes = BTSRecipes;
@@ -306,7 +306,7 @@ function filterRecipes(_FOpt,FOptType,_FIs,_FOp,_FText){
       }
     });
   }else{
-    chrome.storage.sync.get("recipes", function(strg){
+    chrome.storage.local.get("recipes", function(strg){
       BTSRecipes = strg.recipes;
     });
     recipes = BTSRecipes;
@@ -347,7 +347,7 @@ window.addEventListener('load',function(){
     }
   });
   SFClear.addEventListener('click', function(){
-      chrome.storage.sync.get("recipes", function(strg){
+      chrome.storage.local.get("recipes", function(strg){
         BTSRecipes = strg.recipes;
       });
       recipes = BTSRecipes;
