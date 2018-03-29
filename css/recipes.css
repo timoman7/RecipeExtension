@@ -1,0 +1,33 @@
+#sorting{
+  font-family: "Impact", sans-serif;
+  background: rgb(117, 0, 120);
+  color: rgb(255, 153, 33);
+  position: fixed;
+  width: 100%;
+  z-index:1;
+}
+select:-internal-list-box option:hover,
+select:-internal-list-box option:focus,
+select:-internal-list-box option:active,
+select:-internal-list-box option:checked{
+  font-size: 100px !important;
+  background-color: red !important;
+}
+#EveryRecipe{
+  width: 100%;
+}
+.recipe-holder{
+  width: 100%;
+  border: 8px solid #333;
+  padding: 4px;
+}
+#Body{
+  top: 55px;
+  position: relative;
+}
+ol{
+
+}
+li{
+
+}
